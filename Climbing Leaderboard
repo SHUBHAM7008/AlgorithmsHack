@@ -1,0 +1,106 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    /*
+     * Complete the 'climbingLeaderboard' function below.
+     *
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY ranked
+     *  2. INTEGER_ARRAY player
+     */
+
+    public static List<Integer> climbingLeaderboard(List<Integer> ranked, List<Integer> player) {
+    // Write your code here
+        LinkedHashSet<Integer> set = new LinkedHashSet<>(ranked);
+        List<Integer> uniqueRanked = new ArrayList<>(set);
+        
+        List<Integer> result = new ArrayList<>();
+        int n = uniqueRanked.size();
+        
+        int index = n - 1;
+        for (int score : player) {
+            while (index >= 0 && score >= uniqueRanked.get(index)) {
+                index--;
+            }
+            result.add(index + 2);
+        }
+        
+        return result;
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int rankedCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<Integer> ranked = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        int playerCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<Integer> player = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
+
+        List<Integer> result = Result.climbingLeaderboard(ranked, player);
+
+        bufferedWriter.write(
+            result.stream()
+                .map(Object::toString)
+                .collect(joining("\n"))
+            + "\n"
+        );
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
+
+
+
+
+=============================================================================
+    public static List<Integer> climbingLeaderboard(List<Integer> ranked, List<Integer> player) {
+    // Write your code here
+        List<Integer> set= new ArrayList<>();
+        for(Integer i:ranked)
+        {   if(!set.contains(i))   
+               set.add(i);
+        }
+        ranked.clear();
+        int sec=0,first=0;
+        while(sec<player.size()){
+           if(player.get(sec)>=set.get(first)){
+               ranked.add(first+1);
+               sec++;
+               first=0;
+           }else if(first+1==set.size()){
+               ranked.add(first+2);
+               sec++;
+               first=0;
+           } 
+           else{
+               first++;
+           }
+        }   
+      return ranked;
+    }
+
+}
